@@ -114,11 +114,15 @@ class path{
 
 class plane{
     private:
+
+    public:
         vector normal;
         vector point;
         color  c;
-    public:
+        color  emission;
+
         plane(vector p, vector n, color cc) : normal(n), point(p), c(cc) {}
+        plane(vector p, vector n, color cc, color ee) : normal(n), point(p), c(cc), emission(ee) {}
 
         double intersect(path p){
             return ((point - p.begin).dot(normal)) / p.end.dot(normal);
@@ -126,7 +130,7 @@ class plane{
 };
 
 plane planes[] = {
-    plane( vector(-1, 0, -1), vector(0, 1, 0), color(0.999, 0.999, 0.909))
+    plane( vector(-1, 0, -1), vector(0, 1, 0), color(0.999, 0.999, 0.909), color(.5, .2, .99))
 };
 
 bool intersects(path p, int *n, double *dist){
@@ -168,6 +172,23 @@ color tracer(path ray, int iter){
     if (!intersects(ray, &id, &distance)){
         return color();
     }
+
+    plane *target = &planes[id];
+
+    vector x     = ray.begin + ray.end * distance;
+    vector norma = (x - target->normal);
+    color f      = target->c;
+    vector nl;
+
+    if ( norma.dot(ray.end) < 0 ){
+        nl = norma;
+    } else {
+        nl = norma * -1.0;
+    }
+
+    double maxReflex = 0.0;
+
+    
 
     return color(1, .7, .12);
 }
