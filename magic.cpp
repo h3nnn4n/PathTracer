@@ -5,6 +5,20 @@
 
 int gammaCorrection(double);
 
+inline double clamp(double x) {
+    double w;
+
+    w = x;
+
+    if ( w < 0.0 ){
+        w = 0.0;
+    } else if ( w > 1.0 ){
+        w = 1.0;
+    }
+
+    return w;
+}
+
 class vector{
     private:
 
@@ -292,6 +306,10 @@ int gammaCorrection(double x){
     return (pow( truncate(x), 1.0 / 2.2) * 255.0 + .5 );
 }
 
+int toInt(double x){
+    return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
+}
+
 color tracer(path ray, int iter){
     double distance;
     int id = 0;
@@ -390,6 +408,39 @@ color tracer(path ray, int iter){
 //            tracer(reflpath, iter) * Re + tracer(path(x, tdir), iter) * Tr);
 //
 //    }
+    //} else if (target->material == SPEC){           // Ideal SPECULAR reflection
+        //return target->emission + f * (tracer(path(x, ray.end - n * 2 * n.dot(ray.end)), iter));
+    //} else if (target->material == REFR){
+
+        //path reflpath(x, ray.end-n*2*n.dot(ray.end));     // Ideal dielectric REFRACTION
+
+        //bool into  = n.dot(nl) > 0;                // path from outside going in?
+        //double nc  = 1;
+        //double nt  = 1.5;
+        //double nnt = into?nc/nt:nt/nc;
+        //double ddn = ray.end.dot(nl);
+        //double cos2t;
+
+        //if ((cos2t = 1-nnt * nnt * (1-ddn * ddn)) < 0) {   // Total internal reflection
+            //return target->emission + f * (tracer(reflpath,iter));
+        //}
+
+        //vector tdir  = (ray.end * nnt - n * ((into ? 1: -1) * (ddn * nnt + sqrt(cos2t)))).normalized();
+        //double a  = nt-nc;
+        //double b  = nt + nc; 
+        //double R0 = a * a/(b * b); 
+        //double c  =  1 -(into ? -ddn : tdir.dot(n));
+        //double Re = R0 + (1-R0) * c * c * c * c * c;
+        //double Tr = 1-Re;
+        //double P = .25 + .5 * Re;
+        //double RP = Re/P;
+        //double TP = Tr/(1-P);
+
+        //return target->emission + f * (iter>2 ? (drand48()<P ?   // Russian roulette
+            //tracer(reflpath, iter) * RP : tracer(path(x, tdir), iter) * TP):
+            //tracer(reflpath, iter) * Re + tracer(path(x, tdir), iter) * Tr);
+
+    //}
 
 
     // Mirror reflection not working
