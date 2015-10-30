@@ -6,7 +6,9 @@
 #include "vector.h"
 #include "sphere.h"
 #include "color.h"
+#include "plane.h"
 #include "path.h"
+#include "trig.h"
 
 inline double clamp(double x) {
     double w;
@@ -26,6 +28,8 @@ inline int toInt(double x){
     return int(pow(clamp(x), 1 / 2.2) * 255 + .5);
 }
 
+
+
 Sphere spheres[] = {
     Sphere(1e5 , Vector(50, 1e5, 81.6),      Color(.0, .0, .0), Color(.75, .75, .75), DIFF), // Floor
 
@@ -37,48 +41,6 @@ Sphere spheres[] = {
     Sphere(16.5, Vector(113,16.5,-10),       Color(.0, .0, .0), Color(.95, .0,   .0), DIFF), // Difuse ball behind
 
     Sphere(16.5, Vector(69, 16.5,-30),       Color(1.,1.,1.31), Color(1. , 1. , 1. ), DIFF) // Light ball
-};
-
-class Plane{ // Nao funciona :)
-    private:
-
-    public:
-        Vector normal;
-        Vector position;
-        Color  col;
-        Color  emission;
-        Refl_t material;
-
-        Plane(Vector p, Vector n) : normal(n), position(p) {}
-        Plane(Vector p, Vector n, Color cc) : normal(n), position(p), col(cc) {}
-        Plane(Vector p, Vector n, Color cc, Color ee) : normal(n), position(p), col(cc), emission(ee) {}
-        Plane(Vector p, Vector n, Color cc, Color ee, Refl_t mm) : normal(n), position(p), col(cc), emission(ee), material(mm) {}
-
-        double intersect(Path p){
-            Vector u = p.getDir();      // B - A
-            Vector w = p.begin - position;
-
-            double D =  normal.dot(u);
-            double N = -normal.dot(w);
-
-            if ( D == 0 ){
-                if ( N == 0 ){
-                    std::cout << "Inside" << '\n';
-                    return 0.0;
-                } else {
-                    std::cout << "Parallel" << '\n';
-                    return 0.0;
-                }
-            }
-
-            double intersec = N / D;
-
-            if ( intersec < 0 ){
-                return 0.0;
-            }
-
-            return intersec;
-        }
 };
 
 Plane planes[] = {
