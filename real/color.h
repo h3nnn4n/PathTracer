@@ -12,11 +12,14 @@ class Color{
             b = bb;
         }
 
-        Color operator * (Color v);
-        Color operator + (Color v);
-        Color operator * (double k);
-        void  print();
-        Color norm();
+        Color  operator + (Color v);
+        Color  operator * (Color v);
+        Color  operator * (double k);
+        Color  gammaCorrection();
+        double truncate(double);
+        Color  truncated();
+        void   print();
+        Color  norm();
 };
 
 #endif /* __COLOR_PT */
