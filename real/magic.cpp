@@ -27,41 +27,36 @@ inline int toInt(double x){
 }
 
 Sphere spheres[] = {
-    //Sphere(1e5, Vector( 1e5+1,40.8,81.6), Color(),Color(.75,.25,.25),DIFF),//Left
-    //Sphere(1e5, Vector(-1e5+99,40.8,81.6),Color(),Color(.25,.25,.75),DIFF),//Rght
-    //Sphere(1e5, Vector(50,40.8, 1e5),     Color(),Color(.75,.75,.75),DIFF),//Back
-    //Sphere(1e5, Vector(50,40.8,-1e5+170), Color(),Color(),           DIFF),//Frnt
-    //Sphere(1e5, Vector(50, 1e5, 81.6),    Color(),Color(.75,.75,.75),DIFF),//Botm
-    //Sphere(1e5, Vector(50,-1e5+81.6,81.6),Color(),Color(.75,.75,.75),DIFF),//Top
-
-    //Sphere(1e5,  Vector( 1e5+1,40.8,81.6), Color(),Color(.75,.25,.25),DIFF),//Left
     Sphere(1e5 , Vector(50, 1e5, 81.6),      Color(.0, .0, .0), Color(.75, .75, .75), DIFF), // Floor
 
     Sphere(16.5, Vector(27, 16.5, 47),       Color(.0, .0, .0), Color(1. , .75, 1. ), SPEC), // Mirror ball
+    Sphere(99.9, Vector(-50, 70,-170),       Color(.0, .0, .0), Color(1. , .99, 1. ), SPEC), // Big Mirror ball
 
     Sphere(16.5, Vector(73, 16.5, 78),       Color(.0, .0, .0), Color(.15, .15, .75), DIFF), // Difuse ball front
 
-    Sphere(16.5, Vector(113,16.5,  8),       Color(.01,.01,.01),Color(.75, .25, .25), DIFF), // Difuse ball behind
+    Sphere(16.5, Vector(113,16.5,-10),       Color(.0, .0, .0), Color(.95, .0,   .0), DIFF), // Difuse ball behind
 
-    Sphere(16.5, Vector(69, 16.5,-35),       Color(1.,1.,1.31), Color(1. , 1. , 1. ), DIFF) // Light ball
+    Sphere(16.5, Vector(69, 16.5,-30),       Color(1.,1.,1.31), Color(1. , 1. , 1. ), DIFF) // Light ball
 };
 
-class plane{
+class Plane{ // Nao funciona :)
     private:
 
     public:
         Vector normal;
-        Vector point;
-        Color  c;
+        Vector position;
+        Color  col;
         Color  emission;
+        Refl_t material;
 
-        plane(Vector p, Vector n) : normal(n), point(p) {}
-        plane(Vector p, Vector n, Color cc) : normal(n), point(p), c(cc) {}
-        plane(Vector p, Vector n, Color cc, Color ee) : normal(n), point(p), c(cc), emission(ee) {}
+        Plane(Vector p, Vector n) : normal(n), position(p) {}
+        Plane(Vector p, Vector n, Color cc) : normal(n), position(p), col(cc) {}
+        Plane(Vector p, Vector n, Color cc, Color ee) : normal(n), position(p), col(cc), emission(ee) {}
+        Plane(Vector p, Vector n, Color cc, Color ee, Refl_t mm) : normal(n), position(p), col(cc), emission(ee), material(mm) {}
 
         double intersect(Path p){
             Vector u = p.getDir();      // B - A
-            Vector w = p.begin - point;
+            Vector w = p.begin - position;
 
             double D =  normal.dot(u);
             double N = -normal.dot(w);
@@ -79,13 +74,33 @@ class plane{
             double intersec = N / D;
 
             if ( intersec < 0 ){
-                //std::cout<<"aksadjkas\n";
                 return 0.0;
             }
 
             return intersec;
         }
 };
+
+Plane planes[] = {
+    //Plane(Vector(0, 0, 0), Vector(69, 16.5, -30), Color(0, 0, 0), Color(0, 0.1, 0), SPEC)
+};
+
+bool intersects_plane(Path p, int *n, double *dist){
+    double size = sizeof(planes) / sizeof(Plane);
+    double distance;
+    double dold = 1<<20;
+          *dist = 1<<20;
+
+    for(int i = 0 ; i < size ; i++){
+        dold = planes[i].intersect(p);
+        if (dold > 0 && dold < *dist){
+            *n = i;
+            *dist = dold;
+        }
+    }
+
+    return *dist < 1<<20;
+}
 
 bool intersects(Path p, int *n, double *dist){
     double size = sizeof(spheres) / sizeof(Sphere);
@@ -105,56 +120,101 @@ bool intersects(Path p, int *n, double *dist){
 }
 
 Color tracer(Path ray, int iter){
+    double distance_plane;
     double distance;
     int id = 0;
+    int id_plane = 0;
 
-    if (!intersects(ray, &id, &distance)){
+    bool a, b;
+
+    a = intersects(ray, &id, &distance);
+
+    b = intersects_plane(ray, &id_plane, &distance_plane);
+
+    if ( !a && !b){
         return Color();
     }
 
-    Sphere *target = &spheres[id];
+    if (distance_plane < distance){ // Nao Funciona
+        distance = distance_plane;
+        id = id_plane;
 
-    Vector x  = ray.begin + ray.end * distance;
-    Vector n  = (x - target->position).normalized();
-    Vector nl = n.dot(ray.begin) < 0 ? n : n * -1;
-    Color  f  = target->col;
+        Plane *target = &planes[id];
 
-    if ( n.dot(ray.end) < 0 ){
-        nl = n;
-    } else {
-        nl = n * -1.0;
-    }
+        Vector x  = ray.begin + ray.end * distance;
+        Vector n  = (x - target->normal).normalized();
+        Vector nl = n.dot(ray.begin) < 0 ? n : n * -1;
+        Color  f  = target->col;
 
-    double p = f.r > f.g && f.r > f.b ? f.r : f.g > f.b ? f.g : f.b; // mar refl
-
-    if (++iter > 10){ // Quits if done more than 5 recursions
-        if ( drand48() < p){
-            f = f * (1 / p);
+        if ( n.dot(ray.end) < 0 ){
+            nl = n;
         } else {
-            return target->emission; //R.R.
+            nl = n * -1.0;
         }
-    }
 
-    if (target->material == DIFF) {                  // Ideal DIFFUSE reflection
-        double r1  = 2 * M_PI * drand48();
-        double r2  = drand48();
-        double r2s = sqrt(r2);
+        double p = f.r > f.g && f.r > f.b ? f.r : f.g > f.b ? f.g : f.b;
 
-        Vector w = nl;
-        Vector u = ((fabs(w.x) > .1 ? Vector(0,1) : Vector(1)).cross(w)).normalized();
-        Vector v = w.cross(u);
-        Vector d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).normalized();
+        if (iter > 2){
+            return target->emission;
+        } else if (++iter > 5){
+            if ( drand48() < p){
+                f = f * (1 / p);
+            } else {
+                return target->emission;
+            }
+        }
 
-        return target->emission + f * (tracer(Path(x, d), iter));
+        if (target->material == SPEC){
+                return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
+        }
 
-    } else if (target->material == SPEC){           // Ideal SPECULAR reflection
-            return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
+        return Color();
+    } else {
+        Sphere *target = &spheres[id];
+        Vector x  = ray.begin + ray.end * distance;
+        Vector n  = (x - target->position).normalized();
+        Vector nl = n.dot(ray.begin) < 0 ? n : n * -1;
+        Color  f  = target->col;
+
+        if ( n.dot(ray.end) < 0 ){
+            nl = n;
+        } else {
+            nl = n * -1.0;
+        }
+
+        double p = f.r > f.g && f.r > f.b ? f.r : f.g > f.b ? f.g : f.b;
+
+        if (iter > 75){
+            return target->emission;
+        } else if (++iter > 10){
+            if ( drand48() < p){
+                f = f * (1 / p);
+            } else {
+                return target->emission;
+            }
+        }
+
+        if (target->material == DIFF) {
+            double r1  = 2 * M_PI * drand48();
+            double r2  = drand48();
+            double r2s = sqrt(r2);
+
+            Vector w = nl;
+            Vector u = ((fabs(w.x) > .1 ? Vector(0,1) : Vector(1)).cross(w)).normalized();
+            Vector v = w.cross(u);
+            Vector d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).normalized();
+
+            return target->emission + f * (tracer(Path(x, d), iter));
+
+        } else if (target->material == SPEC){
+                return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
+        }
     }
 }
 
 int main(){
-    int screenx = 200 * 4;
-    int screeny = 150 * 4;
+    int screenx = 200 * 2;
+    int screeny = 150 * 2;
 
     Path cam(Vector(50,  52      , 295.6),
              Vector( 0, -0.042612, -1).normalized());
@@ -167,12 +227,12 @@ int main(){
     Color *image = new Color[screenx * screeny];
     int i;
 
-    int samps = 250;
+    int samps = 1000;
 
 #pragma omp parallel for schedule(dynamic, 1) private(r)
 
     for (int y = 0; y < screeny; y++){
-        if ( y %5 == 0){std::cout<<'\r'<<y;fflush(stdout);}
+        if ( y %5 == 0){fprintf(stdout, "\r%.2f%%", ((double)y/screeny)*100.0);fflush(stdout);}
         for (int x = 0; x < screenx; x++){
             r = Color();
             for (int sy = 0, i = (screeny - y - 1) * screenx + x; sy < 2; sy++ ){
