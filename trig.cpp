@@ -5,7 +5,7 @@
 
 #define EPSILON 0.0001
 
-double Triangle::intersects(Path p){
+double Triangle::intersect(Path p){
         Vector O = p.begin;
         Vector D = p.end;
 
@@ -17,6 +17,7 @@ double Triangle::intersects(Path p){
         //Find vectors for two edges sharing v1
         edge1 = v2 - v1;
         edge2 = v3 - v1;
+
         //Begin calculating determinant - also used to calculate u parameter
         P = D.cross(edge2);
         //if determinant is near zero, ray lies in plane of triangle

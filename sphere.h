@@ -5,8 +5,7 @@
 
 #include "path.h"
 #include "color.h"
-
-enum Refl_t { DIFF, SPEC, REFR };
+#include "utils.h"
 
 class Sphere{
     private:
