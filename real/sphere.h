@@ -1,6 +1,9 @@
 #ifndef __SPHERE_PT
 #define __SPHERE_PT
 
+#include <cmath>
+
+#include "path.h"
 #include "color.h"
 
 enum Refl_t { DIFF, SPEC, REFR };

@@ -1,7 +1,8 @@
 #include "vector.h"
 #include "sphere.h"
+#include "path.h"
 
-double Sphere::intersect(path r){
+double Sphere::intersect(Path r){
     Vector op = position - r.begin;
     double t;
     double eps = 1e-4;
