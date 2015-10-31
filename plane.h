@@ -4,6 +4,7 @@
 #include "vector.h"
 #include "color.h"
 #include "path.h"
+#include "utils.h"
 
 class Plane{
     private:

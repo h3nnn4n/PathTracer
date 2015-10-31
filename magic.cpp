@@ -215,8 +215,8 @@ Color tracer(Path ray, int iter){
 }
 
 int main(){
-    int screenx = 200 * 4;
-    int screeny = 150 * 4;
+    int screenx = 200 * 2;
+    int screeny = 150 * 2;
 
     Path cam(Vector(50,  52      , 295.6),
              Vector( 0, -0.042612, -1).normalized());
@@ -229,7 +229,7 @@ int main(){
     Color *image = new Color[screenx * screeny];
     int i;
 
-    int samps = 5000;
+    int samps = 50;
 
 #pragma omp parallel for schedule(dynamic, 1) private(r)
 
