@@ -3,7 +3,7 @@
 #include "path.h"
 #include "color.h"
 
-#define EPSILON 0.0001
+#define EPSILON 0.000001
 
 double Triangle::intersect(Path p){
         Vector O = p.begin;
