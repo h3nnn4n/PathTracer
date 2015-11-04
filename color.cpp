@@ -28,8 +28,6 @@ double Color::truncate(double w){
 }
 
 Color Color::gammaCorrection(){
-    Color p = (*this).truncated();
-
     return Color((pow( (*this).truncate(r), 1.0 / 2.2) * 255.0 + .5 ),
                  (pow( (*this).truncate(g), 1.0 / 2.2) * 255.0 + .5 ),
                  (pow( (*this).truncate(b), 1.0 / 2.2) * 255.0 + .5 ));

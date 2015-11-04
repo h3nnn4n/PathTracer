@@ -13,72 +13,72 @@
 #include "trig.h"
 
 #ifndef MAX_BOUNCE
-#define MAX_BOUNCE 75
+#define MAX_BOUNCE 16
 #endif /* MAX_BOUNCE */
 
 Plane planes[] = {
 };
 
-Sphere spheres[] = {//Scene: radius, position, emission, color, material
-  Sphere(1e5, Vector( 1e5+1,40.8,81.6), Color()         ,Color(.75,.25,.25),DIFF),//Left
-  Sphere(1e5, Vector(-1e5+99,40.8,81.6),Color()         ,Color(.25,.25,.75),DIFF),//Rght
-  Sphere(1e5, Vector(50,40.8, 1e5),     Color()         ,Color(.75,.75,.75),DIFF),//Back
-  Sphere(1e5, Vector(50,40.8,-1e5+170), Color()         ,Color(),           DIFF),//Frnt
-  Sphere(1e5, Vector(50, 1e5, 81.6),    Color()         ,Color(.75,.75,.75),DIFF),//Botm
-  Sphere(1e5, Vector(50,-1e5+81.6,81.6),Color()         ,Color(.75,.75,.75),DIFF),//Top
-  Sphere(16.5,Vector(27,16.5,47),       Color()         ,Color(0,1,1)*.999, DIFF),//Mirr
-//Sphere(16.5,Vector(73,16.5,78),       Color()         ,Color(1,1,1)*.999, SPEC),//Glas
-  Sphere(600, Vector(50,681.6-.27,81.6),Color(12,12,12) ,Color(          ), DIFF) //Lite
-};
-
-int w_octa = 20;
-int x_octa = 73;
-int y_octa = 20;
-int z_octa = 78;
-
-Triangle triangles[] = {
-    Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC)
-};
-
-//Sphere spheres[] = {
-    //Sphere(1e5 , Vector(50, 1e5, 81.6),      Color(.0, .0, .0), Color(.75, .75, .75), DIFF), // Floor
-
-    //Sphere(16.5, Vector(27, 16.5, 47),       Color(.0, .0, .0), Color(.00 , .75, .99 ), SPEC), // Mirror ball
-    ////Sphere(99.9, Vector(-50, 70,-170),       Color(.8, .8, .8), Color(1. , .99, 1. ), SPEC), // Big Mirror ball
-
-    //Sphere(16.5, Vector(73, 16.5, 78),       Color(.0, .0, .0), Color(.15, .15, .75), DIFF), // Difuse ball front
-
-    //Sphere(16.5, Vector(113,16.5,-10),       Color(.0, .0, .0), Color(.95, .0,   .0), DIFF), // Difuse ball behind
-
-    //Sphere(16.5, Vector(69, 16.5,-30),       Color(9., 9., 9.), Color(.99 , .99 , .99 ), DIFF) // Light ball
+//Sphere spheres[] = {//Scene: radius, position, emission, color, material
+  //Sphere(1e5, Vector( 1e5+1,40.8,81.6), Color()         ,Color(.75,.25,.25),DIFF),//Left
+  //Sphere(1e5, Vector(-1e5+99,40.8,81.6),Color()         ,Color(.25,.25,.75),DIFF),//Rght
+  //Sphere(1e5, Vector(50,40.8, 1e5),     Color()         ,Color(.75,.75,.75),DIFF),//Back
+  //Sphere(1e5, Vector(50,40.8,-1e5+170), Color()         ,Color(),           DIFF),//Frnt
+  //Sphere(1e5, Vector(50, 1e5, 81.6),    Color()         ,Color(.75,.75,.75),DIFF),//Botm
+  //Sphere(1e5, Vector(50,-1e5+81.6,81.6),Color()         ,Color(.75,.75,.75),DIFF),//Top
+  //Sphere(16.5,Vector(27,16.5,47),       Color()         ,Color(0,1,1)*.999, DIFF),//Mirr
+////Sphere(16.5,Vector(73,16.5,78),       Color()         ,Color(1,1,1)*.999, SPEC),//Glas
+  //Sphere(600, Vector(50,681.6-.27,81.6),Color(12,12,12) ,Color(          ), DIFF) //Lite
 //};
-
-//Plane planes[] = {
-    //Plane(Vector(0, 0, 0), Vector(69, 16.5, -30), Color(0, 0, 0), Color(0, 0.1, 0), SPEC)
-//};
+//int w_octa = 20;
+//int x_octa = 73;
+//int y_octa = 20;
+//int z_octa = 78;
 
 //Triangle triangles[] = {
-    ////Triangle(Vector(-100, 16.5, -150), Vector(200, 16.5, -140), Vector(50, 150, -150), Color(0, 0, 0), Color(1, 1, 1), DIFF)
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
+    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
+    //Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
+    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
+    //Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
+    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
+    //Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
+    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC)
 //};
+
+double light_x = 69;
+double light_y = 16.5;
+double light_z = -30;
+
+Sphere spheres[] = {
+    Sphere(1e5 , Vector(50, 1e5, 81.6),             Color(.0, .0, .0), Color(.75, .75, .75),    DIFF), // Floor
+    Sphere(16.5, Vector(27, 16.5, 47),              Color(.0, .0, .0), Color(.00 , .75, .99 ),  SPEC), // Mirror ball
+    Sphere(16.5, Vector(73, 16.5, 78),              Color(.0, .0, .0), Color(.15, .15, .75),    DIFF), // Difuse ball front
+    Sphere(16.5, Vector(113,16.5,-10),              Color(.0, .0, .0), Color(.95, .0,   .0),    DIFF), // Difuse ball behind
+
+    Sphere(16.5 + 80, Vector(133, 16.5 + 80, -100), Color(.0, .0, .0), Color(.99, .99, .99),       SPEC), // Difuse ball behind
+
+    Sphere(16.5, Vector(light_x,
+                        light_y,
+                        light_z),            Color(9., 9., 9.), Color(.99 , .99 , .99 ),        DIFF) // Light ball
+};
+
+int x  = 40;
+int xx = 40;
+
+Triangle triangles[] = {
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
+};
 
 bool intersects_trig(Path p, int *n, double *dist){
     double size = sizeof(triangles) / sizeof(Triangle);
-    double distance;
     double dold = 1<<20;
           *dist = 1<<20;
 
@@ -95,7 +95,6 @@ bool intersects_trig(Path p, int *n, double *dist){
 
 bool intersects(Path p, int *n, double *dist){
     double size = sizeof(spheres) / sizeof(Sphere);
-    double distance;
     double dold = 1<<20;
           *dist = 1<<20;
 
@@ -212,9 +211,11 @@ Color tracer(Path ray, int iter){
                 return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
         }
     }
+
+    return Color();
 }
 
-int main(){
+int render(int i){
     int screenx = 200 * 2;
     int screeny = 150 * 2;
 
@@ -227,7 +228,6 @@ int main(){
     Color r;
 
     Color *image = new Color[screenx * screeny];
-    int i;
 
     int samps = 50;
 
@@ -252,9 +252,14 @@ int main(){
         }
     }
 
-    std::cout << "\rDone\n";
+    std::cout << "\rDone   \n";
 
-    FILE *f = fopen("out.ppm", "w");         // PPM cancer
+    char name[256];
+
+    sprintf(name, "out_%03d.ppm", i);
+
+    //FILE *f = fopen("out.ppm", "w");         // PPM cancer
+    FILE *f = fopen(name, "w");         // PPM cancer
     fprintf(f, "P3\n%d %d\n%d\n", screenx, screeny, 255);
 
     for (int i = 0; i < screenx * screeny; i++) {
@@ -264,6 +269,44 @@ int main(){
         fprintf(f,"%d %d %d ", toInt(image[i].r),
                                toInt(image[i].g),
                                toInt(image[i].b));
+        }
+
+    fclose(f);
+
+    return 0;
+}
+
+int main(){
+
+    int i;
+
+    int ay = 0;
+
+    light_y = 16.5 + 35;
+
+    for ( i = 0; i < 17; i++ ){
+        printf("\n %d %f\n", i, light_y);
+        ay += 1;
+        light_y -= ay;
+
+        if ( light_y == 16.5 ) {
+            ay *= -1;
+        } else if ( light_y < 16.5 ) {
+
+            spheres[5] =  Sphere(16.5, Vector(light_x,
+                                              16.5   ,
+                                              light_z ), Color(9., 9., 9.), Color(.99 , .99 , .99 ), DIFF); // Light ball
+            render(i);
+
+            ay += 1;
+            ay *= -1;
+            continue;
+        }
+
+        spheres[5] =  Sphere(16.5, Vector(light_x,
+                                          light_y,
+                                          light_z ), Color(9., 9., 9.), Color(.99 , .99 , .99 ), DIFF); // Light ball
+        render(i);
     }
 
     return 0;
