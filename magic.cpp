@@ -50,12 +50,12 @@ double light_y = 16.5;
 double light_z = -30;
 
 Sphere spheres[] = {
-    Sphere(1e5 , Vector(50, 1e5, 81.6),             Color(.0, .0, .0), Color(.75, .75, .75),    DIFF), // Floor
-    Sphere(16.5, Vector(27, 16.5, 47),              Color(.0, .0, .0), Color(.00 , .75, .99 ),  SPEC), // Mirror ball
+    Sphere(1e5 , Vector(50, 1e5, 81.6),             Color(.0, .0, .0), Color(.99, .99, .99),    DIFF), // Floor
+    Sphere(16.5, Vector(27, 16.5, 47),              Color(.0, .0, .0), Color(.00 ,.75, .99),    SPEC), // Mirror ball
     Sphere(16.5, Vector(73, 16.5, 78),              Color(.0, .0, .0), Color(.15, .15, .75),    DIFF), // Difuse ball front
     Sphere(16.5, Vector(113,16.5,-10),              Color(.0, .0, .0), Color(.95, .0,   .0),    DIFF), // Difuse ball behind
 
-    Sphere(16.5 + 80, Vector(133, 16.5 + 80, -100), Color(.0, .0, .0), Color(.99, .99, .99),       SPEC), // Difuse ball behind
+    Sphere(16.5 + 80, Vector(133, 16.5 + 80, -100), Color(.0, .0, .0), Color(.99, .99, .99),    SPEC), // Big mirror ball
 
     Sphere(16.5, Vector(light_x,
                         light_y,
@@ -125,28 +125,36 @@ Color tracer(Path ray, int iter){
         return Color();
     }
 
-    if (distance_plane < distance){ // Nao Funciona
-        distance = distance_plane;
-        id = id_plane;
+    if (distance_plane < distance){
+        distance = distance_plane;                                           // Distance betway where the ray was cast and interception point
+        id = id_plane;                                                       // Position in the array where the object is
 
-        Triangle *target = &triangles[id];
+        Triangle *target = &triangles[id];                                   // Intercepted triangle
 
-        Vector x  = ray.begin + ray.end * distance;
-        Vector n  = (x - ((target->v2-x).cross(target->v3-x))).normalized();
-        Vector nl = n.dot(ray.begin) < 0 ? n : n * -1;
-        Color  f  = target->col;
+        Vector x  = ray.begin + ray.end * distance;                          // Intersection point
+        Vector n  = (x - ((target->v2-x).cross(target->v3-x))).normalized(); // Normal at reflection point
+        Color  f  = target->col;                                             // Color to be reflected
+        Vector nl;                                                           // This will be the 'absolute value'
 
-        if ( n.dot(ray.end) < 0 ){
-            nl = n;
-        } else {
-            nl = n * -1.0;
-        }
+        if ( n.dot(ray.end) < 0 ){                                           // If the dot product is negative, turns the ray around
+            nl = n;                                                          //
+        } else {                                                             //
+            nl = n * -1.0;                                                   //
+        }                                                                    //
 
-        double p = f.r > f.g && f.r > f.b ? f.r : f.g > f.b ? f.g : f.b;
+        double p = 0.0;
+        
+        if ( f.r > p ){                                                      // Get the greater color intersity
+            p = f.r;                                                         // 
+        } else if ( f.g > p ){                                               // 
+            p = f.g;                                                         // 
+        } else if ( f.b > p ){                                               // 
+            p = f.b;                                                         // 
+        }                                                                    // 
 
-        if (iter > MAX_BOUNCE){
+        if (iter > MAX_BOUNCE){                                              // If ray was reflected MAX_BOUNCE times stop and return face emission
             return target->emission;
-        } else if (++iter > 5){
+        } else if (++iter > 5){                                              // If more than 5 reflections were done star russian roulette
             if ( drand48() < p){
                 f = f * (1 / p);
             } else {
@@ -166,7 +174,7 @@ Color tracer(Path ray, int iter){
 
             return target->emission + f * (tracer(Path(x, d), iter));
         } else if (target->material == SPEC){
-            return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
+            return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));    // Ideal reflection
         }
 
         return Color();
