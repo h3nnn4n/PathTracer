@@ -109,7 +109,7 @@ bool intersects(Path p, int *n, double *dist){
     return *dist < 1<<20;
 }
 
-Color tracer(Path ray, int iter){
+Color tracer(Path ray, int iter, int emit = 1){
     double distance_plane;
     double distance;
     int id = 0;
@@ -158,7 +158,7 @@ Color tracer(Path ray, int iter){
             if ( drand48() < p){
                 f = f * (1 / p);
             } else {
-                return target->emission;
+                return target->emission * emit;
             }
         }
 
@@ -172,7 +172,7 @@ Color tracer(Path ray, int iter){
             Vector v = w.cross(u);
             Vector d = (u * cos(theta) * phis + v * sin(theta) * phis + w * sqrt(1 - phi)).normalized();  
 
-            return target->emission + f * (tracer(Path(x, d), iter));
+            return target->emission * emit + f * (tracer(Path(x, d), iter));
         } else if (target->material == SPEC){
             return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));    // Ideal reflection: R = D - 2(N.D)N
         }
@@ -191,7 +191,15 @@ Color tracer(Path ray, int iter){
             nl = n * -1.0;
         }
 
-        double p = f.r > f.g && f.r > f.b ? f.r : f.g > f.b ? f.g : f.b;
+        double p = 0.0;
+        
+        if ( f.r > p ){                                                      // Get the greater color intersity
+            p = f.r;                                                         // 
+        } else if ( f.g > p ){                                               // 
+            p = f.g;                                                         // 
+        } else if ( f.b > p ){                                               // 
+            p = f.b;                                                         // 
+        }                                                                    // 
 
         if (iter > MAX_BOUNCE){
             return target->emission;
@@ -215,6 +223,7 @@ Color tracer(Path ray, int iter){
 
 
             Color e;
+#ifdef __explict
             double size = sizeof(spheres) / sizeof(Sphere);
 
             for (int i=0; i<size; i++){
@@ -222,23 +231,26 @@ Color tracer(Path ray, int iter){
                 if (s.emission.r <= 0 && s.emission.g <= 0 && s.emission.b <=0 ) continue; // skip non-lights
 
                 Vector sw = s.position - x;
-                Vector su = ((fabs(sw.x)>.1?Vector(0,1):Vector(1)).cross(sw)).norm();
+                Vector su = ((fabs(sw.x) > .1 ? Vector(0,1) : Vector(1)).cross(sw)).norm();
                 Vector sv = sw.cross(su);
 
                 double cos_a_max = sqrt(1-s.radius*s.radius/(x-s.position).dot(x-s.position));
-                double eps1 = drand48(), eps2 = drand48();
-                double cos_a = 1-eps1+eps1*cos_a_max;
-                double sin_a = sqrt(1-cos_a*cos_a);
-                double phi = 2*M_PI*eps2;
-                Vector l = su*cos(phi)*sin_a + sv*sin(phi)*sin_a + sw*cos_a;
+                double eps1      = drand48(), eps2 = drand48();
+                double cos_a     = 1-eps1+eps1*cos_a_max;
+                double sin_a     = sqrt(1-cos_a*cos_a);
+                double phi       = 2*M_PI*eps2;
+
+                Vector l         = su*cos(phi)*sin_a + sv*sin(phi)*sin_a + sw*cos_a;
                 l.norm();
-                if (intersects(Path(x,l), &id, &distance) && id==i){  // shadow ray
-                double omega = 2*M_PI*(1-cos_a_max);
-                e = e + f * (s.emission*l.dot(nl)*omega)*M_1_PI;  // 1/pi for brdf
+
+                if (intersects(Path(x,l), &id, &distance) && id == i){
+                    double omega = 2 * M_PI * (1 - cos_a_max);
+                    e = e + f * (s.emission*l.dot(nl)*omega) * M_1_PI;
                 }
             }
+#endif
 
-            return target->emission + e + f * (tracer(Path(x, d), iter));
+            return target->emission + e + f * (tracer(Path(x, d), iter, 0));
 
         } else if (target->material == SPEC){
                 return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
