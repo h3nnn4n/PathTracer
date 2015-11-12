@@ -66,15 +66,15 @@ int x  = 40;
 int xx = 40;
 
 Triangle triangles[] = {
-    Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
 
-    Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
+    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
 };
 
 bool intersects_trig(Path p, int *n, double *dist){
@@ -163,18 +163,18 @@ Color tracer(Path ray, int iter){
         }
 
         if (target->material == DIFF) {
-            double r1  = 2 * M_PI * drand48();
-            double r2  = drand48();
-            double r2s = sqrt(r2);
+            double theta  = 2 * M_PI * drand48();                            // Random angles for theta and phi
+            double phi    = drand48();                                       //
+            double phis   = sqrt(phi);                                       // sqrt(phi) to get a best distribuition on a unit hemisphere
 
             Vector w = nl;
             Vector u = ((fabs(w.x) > .1 ? Vector(0,1) : Vector(1)).cross(w)).normalized();
             Vector v = w.cross(u);
-            Vector d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).normalized();
+            Vector d = (u * cos(theta) * phis + v * sin(theta) * phis + w * sqrt(1 - phi)).normalized();  
 
             return target->emission + f * (tracer(Path(x, d), iter));
         } else if (target->material == SPEC){
-            return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));    // Ideal reflection
+            return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));    // Ideal reflection: R = D - 2(N.D)N
         }
 
         return Color();
@@ -213,7 +213,32 @@ Color tracer(Path ray, int iter){
             Vector v = w.cross(u);
             Vector d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).normalized();
 
-            return target->emission + f * (tracer(Path(x, d), iter));
+
+            Color e;
+            double size = sizeof(spheres) / sizeof(Sphere);
+
+            for (int i=0; i<size; i++){
+                Sphere s = spheres[i];
+                if (s.emission.r <= 0 && s.emission.g <= 0 && s.emission.b <=0 ) continue; // skip non-lights
+
+                Vector sw = s.position - x;
+                Vector su = ((fabs(sw.x)>.1?Vector(0,1):Vector(1)).cross(sw)).norm();
+                Vector sv = sw.cross(su);
+
+                double cos_a_max = sqrt(1-s.radius*s.radius/(x-s.position).dot(x-s.position));
+                double eps1 = drand48(), eps2 = drand48();
+                double cos_a = 1-eps1+eps1*cos_a_max;
+                double sin_a = sqrt(1-cos_a*cos_a);
+                double phi = 2*M_PI*eps2;
+                Vector l = su*cos(phi)*sin_a + sv*sin(phi)*sin_a + sw*cos_a;
+                l.norm();
+                if (intersects(Path(x,l), &id, &distance) && id==i){  // shadow ray
+                double omega = 2*M_PI*(1-cos_a_max);
+                e = e + f * (s.emission*l.dot(nl)*omega)*M_1_PI;  // 1/pi for brdf
+                }
+            }
+
+            return target->emission + e + f * (tracer(Path(x, d), iter));
 
         } else if (target->material == SPEC){
                 return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
@@ -237,7 +262,7 @@ int render(int i){
 
     Color *image = new Color[screenx * screeny];
 
-    int samps = 50;
+    int samps = 5;
 
 #pragma omp parallel for schedule(dynamic, 1) private(r)
 
@@ -292,7 +317,7 @@ int main(){
 
     light_y = 16.5 + 35;
 
-    for ( i = 0; i < 17; i++ ){
+    for ( i = 0; i < 1; i++ ){
         printf("\n %d %f\n", i, light_y);
         ay += 1;
         light_y -= ay;
