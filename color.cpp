@@ -50,3 +50,4 @@ Color Color::operator * (Color v){
                  g * v.g,
                  b * v.b);
 }
+

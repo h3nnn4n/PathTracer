@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cmath>
 #include <vector>
+#include <ctime>
 
 #include "utils.h"
 #include "vector.h"
@@ -12,85 +13,28 @@
 #include "path.h"
 #include "trig.h"
 
+#include "scenes.h"
+
 #ifndef MAX_BOUNCE
 #define MAX_BOUNCE 16
 #endif /* MAX_BOUNCE */
 
-Plane planes[] = {
-};
 
-//Sphere spheres[] = {//Scene: radius, position, emission, color, material
-  //Sphere(1e5, Vector( 1e5+1,40.8,81.6), Color()         ,Color(.75,.25,.25),DIFF),//Left
-  //Sphere(1e5, Vector(-1e5+99,40.8,81.6),Color()         ,Color(.25,.25,.75),DIFF),//Rght
-  //Sphere(1e5, Vector(50,40.8, 1e5),     Color()         ,Color(.75,.75,.75),DIFF),//Back
-  //Sphere(1e5, Vector(50,40.8,-1e5+170), Color()         ,Color(),           DIFF),//Frnt
-  //Sphere(1e5, Vector(50, 1e5, 81.6),    Color()         ,Color(.75,.75,.75),DIFF),//Botm
-  //Sphere(1e5, Vector(50,-1e5+81.6,81.6),Color()         ,Color(.75,.75,.75),DIFF),//Top
-  //Sphere(16.5,Vector(27,16.5,47),       Color()         ,Color(0,1,1)*.999, DIFF),//Mirr
-////Sphere(16.5,Vector(73,16.5,78),       Color()         ,Color(1,1,1)*.999, SPEC),//Glas
-  //Sphere(600, Vector(50,681.6-.27,81.6),Color(12,12,12) ,Color(          ), DIFF) //Lite
-//};
-//int w_octa = 20;
-//int x_octa = 73;
-//int y_octa = 20;
-//int z_octa = 78;
 
-//Triangle triangles[] = {
-    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    //Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa,  w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    //Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa,  w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    //Triangle(Vector(  w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC),
-    //Triangle(Vector( -w_octa + x_octa,  0 + y_octa,  0 + z_octa), Vector( 0 + x_octa, -w_octa + y_octa,  0 + z_octa), Vector( 0 + x_octa,  0 + y_octa, -w_octa + z_octa), Color(0, 0, 0), Color(.25, .75, .25) * .99, SPEC)
-//};
-
-double light_x = 69;
-double light_y = 16.5;
-double light_z = -30;
-
-Sphere spheres[] = {
-    Sphere(1e5 , Vector(50, 1e5, 81.6),             Color(.0, .0, .0), Color(.99, .99, .99),    DIFF), // Floor
-    Sphere(16.5, Vector(27, 16.5, 47),              Color(.0, .0, .0), Color(.00 ,.75, .99),    SPEC), // Mirror ball
-    Sphere(16.5, Vector(73, 16.5, 78),              Color(.0, .0, .0), Color(.15, .15, .75),    DIFF), // Difuse ball front
-    Sphere(16.5, Vector(113,16.5,-10),              Color(.0, .0, .0), Color(.95, .0,   .0),    DIFF), // Difuse ball behind
-
-    Sphere(16.5 + 80, Vector(133, 16.5 + 80, -100), Color(.0, .0, .0), Color(.99, .99, .99),    SPEC), // Big mirror ball
-
-    Sphere(16.5, Vector(light_x,
-                        light_y,
-                        light_z),            Color(9., 9., 9.), Color(.99 , .99 , .99 ),        DIFF) // Light ball
-};
-
-int x  = 40;
-int xx = 40;
-
-Triangle triangles[] = {
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
-};
-
-bool intersects_trig(Path p, int *n, double *dist){
-    double size = sizeof(triangles) / sizeof(Triangle);
-    double dold = 1<<20;
-          *dist = 1<<20;
-
-    for(int i = 0 ; i < size ; i++){
-        dold = triangles[i].intersect(p);
-        if (dold > 0 && dold < *dist){
-            *n = i;
-            *dist = dold;
+bool intersects_trig(Path p, int *n, double *dist){                 //
+    double size = sizeof(triangles) / sizeof(Triangle);             // Number of positions in the vector
+    double dold = 1<<20;                                            // 
+          *dist = 1<<20;                                            // 
+                                                                    //
+    for(int i = 0 ; i < size ; i++){                                // Loops over the triangles
+        dold = triangles[i].intersect(p);                           //
+        if (dold > 0 && dold < *dist){                              // Check if the distance is shorter than the previous one, if yes
+            *n = i;                                                 // Stores the obj ID
+            *dist = dold;                                           // and the distance
         }
     }
 
-    return *dist < 1<<20;
+    return *dist < 1<<20;                                           // Returns true if a near object was hit
 }
 
 bool intersects(Path p, int *n, double *dist){
@@ -117,12 +61,12 @@ Color tracer(Path ray, int iter, int emit = 1){
 
     bool a, b;
 
-    a = intersects(ray, &id, &distance);
-
-    b = intersects_trig(ray, &id_plane, &distance_plane);
-
-    if ( !a && !b){
-        return Color();
+    a = intersects(ray, &id, &distance);                                    // Checks if a sphere was hit
+                                                                            //
+    b = intersects_trig(ray, &id_plane, &distance_plane);                   // and a trig
+                                                                            //
+    if ( !a && !b){                                                         //
+        return Color();                                                     // of no then returns black
     }
 
     if (distance_plane < distance){
@@ -172,8 +116,8 @@ Color tracer(Path ray, int iter, int emit = 1){
             Vector v = w.cross(u);
             Vector d = (u * cos(theta) * phis + v * sin(theta) * phis + w * sqrt(1 - phi)).normalized();  
 
-            return target->emission * emit + f * (tracer(Path(x, d), iter));
-        } else if (target->material == SPEC){
+            return target->emission + f * (tracer(Path(x, d), iter));
+        } else {
             return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));    // Ideal reflection: R = D - 2(N.D)N
         }
 
@@ -182,7 +126,7 @@ Color tracer(Path ray, int iter, int emit = 1){
         Sphere *target = &spheres[id];
         Vector x  = ray.begin + ray.end * distance;
         Vector n  = (x - target->position).normalized();
-        Vector nl = n.dot(ray.begin) < 0 ? n : n * -1;
+        Vector nl;
         Color  f  = target->col;
 
         if ( n.dot(ray.end) < 0 ){
@@ -211,7 +155,19 @@ Color tracer(Path ray, int iter, int emit = 1){
             }
         }
 
-        if (target->material == DIFF) {
+        if        (target->material == SPEC) {
+            return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
+        //} else if (target->material == HAZE) {
+            //Vector w = Vector(1.0, 1.0, 1.0) * drand48() * target->haziness;
+
+            //if ( 0.5 < drand48() ) { w.x *= -1.0; }
+            //if ( 0.5 < drand48() ) { w.y *= -1.0; }
+            //if ( 0.5 < drand48() ) { w.z *= -1.0; }
+
+            ////printf("%f %f %f\n", w.x, w.y, w.z);
+
+            //return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end + w)), iter));
+        } else if (target->material == DIFF) {
             double r1  = 2 * M_PI * drand48();
             double r2  = drand48();
             double r2s = sqrt(r2);
@@ -222,38 +178,7 @@ Color tracer(Path ray, int iter, int emit = 1){
             Vector d = (u * cos(r1) * r2s + v * sin(r1) * r2s + w * sqrt(1 - r2)).normalized();
 
 
-            Color e;
-#ifdef __explict
-            double size = sizeof(spheres) / sizeof(Sphere);
-
-            for (int i=0; i<size; i++){
-                Sphere s = spheres[i];
-                if (s.emission.r <= 0 && s.emission.g <= 0 && s.emission.b <=0 ) continue; // skip non-lights
-
-                Vector sw = s.position - x;
-                Vector su = ((fabs(sw.x) > .1 ? Vector(0,1) : Vector(1)).cross(sw)).norm();
-                Vector sv = sw.cross(su);
-
-                double cos_a_max = sqrt(1-s.radius*s.radius/(x-s.position).dot(x-s.position));
-                double eps1      = drand48(), eps2 = drand48();
-                double cos_a     = 1-eps1+eps1*cos_a_max;
-                double sin_a     = sqrt(1-cos_a*cos_a);
-                double phi       = 2*M_PI*eps2;
-
-                Vector l         = su*cos(phi)*sin_a + sv*sin(phi)*sin_a + sw*cos_a;
-                l.norm();
-
-                if (intersects(Path(x,l), &id, &distance) && id == i){
-                    double omega = 2 * M_PI * (1 - cos_a_max);
-                    e = e + f * (s.emission*l.dot(nl)*omega) * M_1_PI;
-                }
-            }
-#endif
-
-            return target->emission + e + f * (tracer(Path(x, d), iter, 0));
-
-        } else if (target->material == SPEC){
-                return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));
+            return target->emission + f * (tracer(Path(x, d), iter, 0));
         }
     }
 
@@ -261,11 +186,11 @@ Color tracer(Path ray, int iter, int emit = 1){
 }
 
 int render(int i){
-    int screenx = 200 * 2;
-    int screeny = 150 * 2;
+    int screenx = 200 * 4;
+    int screeny = 150 * 4;
 
-    Path cam(Vector(50,  52      , 295.6),
-             Vector( 0, -0.042612, -1).normalized());
+    Path cam(Vector(50,  52      ,  295.6),
+             Vector( 0, -0.042612, -1    ).normalized());
 
     Vector dx = Vector(screenx * .5135 / screeny);
     Vector dy = (dx.cross(cam.end)).normalized() * .5135;
@@ -274,7 +199,9 @@ int render(int i){
 
     Color *image = new Color[screenx * screeny];
 
-    int samps = 5;
+    int samps = 250;
+
+    //time_t timer = clock();
 
 #pragma omp parallel for schedule(dynamic, 1) private(r)
 
@@ -282,16 +209,16 @@ int render(int i){
         if ( y %5 == 0){fprintf(stdout, "\r%.2f%%", ((double)y/screeny)*100.0);fflush(stdout);}
         for (int x = 0; x < screenx; x++){
             r = Color();
-            for (int sy = 0, i = (screeny - y - 1) * screenx + x; sy < 2; sy++ ){
-                for (int sx = 0; sx < 2; sx++){
-                    for (int s = 0; s < samps; s++ ){
-                        double r1 = 2 * drand48(), ddx = r1<1 ? sqrt(r1) - 1: 1 - sqrt(2 - r1);
-                        double r2 = 2 * drand48(), ddy = r2<1 ? sqrt(r2) - 1: 1 - sqrt(2 - r2);
-                        Vector d  = cam.end + dx * (((sx + .5  +  ddx)/2 + x)/screenx  -  .5)  +
-                                              dy * (((sy + .5  +  ddy)/2 + y)/screeny  -  .5)  ;
-                        r  =  r + tracer(Path(cam.begin + d * 140, d.normalized()), 0) * (1. / samps);
-                    }
-                    image[i] = image[i] + r.truncated() * .25;
+            for (int sy = 0, i = (screeny - y - 1) * screenx + x; sy < 2; sy++ ){                                    //
+                for (int sx = 0; sx < 2; sx++){                                                                      //
+                    for (int s = 0; s < samps; s++ ){                                                                //
+                        double r1 = 2 * drand48(), ddx = r1<1 ? sqrt(r1) - 1: 1 - sqrt(2 - r1);                      //
+                        double r2 = 2 * drand48(), ddy = r2<1 ? sqrt(r2) - 1: 1 - sqrt(2 - r2);                      //
+                        Vector d  = cam.end + dx * (((sx + .5  +  ddx)/2 + x)/screenx  -  .5)  +                     // Points the camera to the right direction
+                                              dy * (((sy + .5  +  ddy)/2 + y)/screeny  -  .5)  ;                     //
+                        r  =  r + tracer(Path(cam.begin + d * 140, d.normalized()), 0) * (1. / samps);               // Cast the ray
+                    }                                                                                                //
+                    image[i] = image[i] + r.truncated() * .25;                                                       // Antia alising grid is 2x2, so devide by 4
                 }
             }
         }
@@ -323,36 +250,38 @@ int render(int i){
 
 int main(){
 
-    int i;
+    render(0);
 
-    int ay = 0;
+    //int i;
 
-    light_y = 16.5 + 35;
+    //int ay = 0;
 
-    for ( i = 0; i < 1; i++ ){
-        printf("\n %d %f\n", i, light_y);
-        ay += 1;
-        light_y -= ay;
+    //light_y = 16.5 + 35;
 
-        if ( light_y == 16.5 ) {
-            ay *= -1;
-        } else if ( light_y < 16.5 ) {
+    //for ( i = 0; i < 1; i++ ){
+        //printf("\n %d %f\n", i, light_y);
+        //ay += 1;
+        //light_y -= ay;
 
-            spheres[5] =  Sphere(16.5, Vector(light_x,
-                                              16.5   ,
-                                              light_z ), Color(9., 9., 9.), Color(.99 , .99 , .99 ), DIFF); // Light ball
-            render(i);
+        //if ( light_y == 16.5 ) {
+            //ay *= -1;
+        //} else if ( light_y < 16.5 ) {
 
-            ay += 1;
-            ay *= -1;
-            continue;
-        }
+            //spheres[5] =  Sphere(16.5, Vector(light_x,
+                                              //16.5   ,
+                                              //light_z ), Color(9., 9., 9.), Color(.99 , .99 , .99 ), 0.0); // Light ball
+            //render(i);
 
-        spheres[5] =  Sphere(16.5, Vector(light_x,
-                                          light_y,
-                                          light_z ), Color(9., 9., 9.), Color(.99 , .99 , .99 ), DIFF); // Light ball
-        render(i);
-    }
+            //ay += 1;
+            //ay *= -1;
+            //continue;
+        //}
+
+        //spheres[5] =  Sphere(16.5, Vector(light_x,
+                                          //light_y,
+                                          //light_z ), Color(9., 9., 9.), Color(.99 , .99 , .99 ), 0.0); // Light ball
+        //render(i);
+    //}
 
     return 0;
 }

@@ -3,7 +3,7 @@
 
 #include <cmath>
 
-enum Refl_t { DIFF, SPEC, REFR };
+enum Refl_t { DIFF, SPEC, HAZE };
 
 inline double clamp(double x) {
     double w;
