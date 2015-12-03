@@ -59,15 +59,15 @@ int x  = 40;
 int xx = 40;
 
 Triangle triangles[] = {
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0,  x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
 
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
-    //Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx,  x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector(  x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF),
+    Triangle(Vector( -x,  0 + xx,  0), Vector( 0, -x + xx,  0), Vector( 0,  0 + xx, -x), Color(0, 0, 0), Color(1, 1, 1) * .99, DIFF)
 };
 
 #endif /* __scene */

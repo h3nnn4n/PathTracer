@@ -44,7 +44,7 @@ Vector Vector::operator * (Vector v){
                     z * v.z);
 }
 
-double Vector::dot(Vector u){
+double Vector::dot(Vector u){ // Produto escalar
     return x * u.x +
             y * u.y +
             z * u.z;
@@ -67,7 +67,7 @@ void Vector::normalize(){
     return;
 }
 
-Vector Vector::cross (Vector u){
+Vector Vector::cross (Vector u){        // Produto vetorial
     return Vector(y * u.z - z * u.y,
                     z * u.x - x * u.z,
                     x * u.y - y * u.x);

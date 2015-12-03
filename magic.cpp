@@ -117,7 +117,7 @@ Color tracer(Path ray, int iter, int emit = 1){
             Vector d = (u * cos(theta) * phis + v * sin(theta) * phis + w * sqrt(1 - phi)).normalized();  
 
             return target->emission + f * (tracer(Path(x, d), iter));
-        } else {
+        } else if (target->material == SPEC) {
             return target->emission + f * (tracer(Path(x, ray.end - n * 2.0 * n.dot(ray.end)), iter));    // Ideal reflection: R = D - 2(N.D)N
         }
 
@@ -199,7 +199,7 @@ int render(int i){
 
     Color *image = new Color[screenx * screeny];
 
-    int samps = 250;
+    int samps = 500;
 
     //time_t timer = clock();
 
